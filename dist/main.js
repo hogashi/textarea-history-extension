@@ -1,4 +1,4 @@
-const LOCAL_STORAGE_KEY = "textarea-histories";
+const LOCAL_STORAGE_KEY = "textarea-history-extension-histories";
 
 function main() {
   // トークンとかはとらないようにする
