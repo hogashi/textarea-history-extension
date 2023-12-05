@@ -1,5 +1,4 @@
 {
-  // "$schema": "https://json.schemastore.org/chrome-manifest",
   "manifest_version": 3,
   "name": "textarea history",
   "description": "textarea history",
@@ -12,11 +11,5 @@
       "matches": ["<all_urls>"],
       "js": ["main.js"]
     }
-  ],
-  "action": {
-    "default_popup": "popup.html",
-    "default_icon": {
-      "128": "icon.png"
-    }
-  }
+  ]
 }
