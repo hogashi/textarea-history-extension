@@ -43,7 +43,8 @@ function main() {
             element.addEventListener(eventName, {
                 handleEvent: (event) => {
                     // 日本語入力中だったら何もしない
-                    if (event.isComposing) {
+                    // Enterだったら変換確定だったりするので保存してみる
+                    if (event.isComposing && event.key !== "Enter") {
                         return;
                     }
                     // 保存しまくらないように10秒ごとに保存にする
