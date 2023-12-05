@@ -1,0 +1,10 @@
+{
+  "name": "textarea-history-extension",
+  "description": "textarea history chrome extension",
+  "scripts": {
+    "build": "tsc"
+  },
+  "dependencies": {
+    "typescript": "^5.3.2"
+  }
+}
