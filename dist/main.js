@@ -14,20 +14,26 @@ function main() {
   function saveHistory(elements) {
     const datetime = new Date().toISOString();
 
+    const texts = elements
+      .filter((element) => element.value)
+      .map((element) => {
+        return {
+          name: element.name,
+          value: element.value,
+        };
+      });
+
+    if (texts.length === 0) {
+      return;
+    }
+
     localStorage.setItem(
       LOCAL_STORAGE_KEY,
       JSON.stringify([
         ...inputHistories,
         {
           datetime,
-          texts: [
-            ...elements.map((element) => {
-              return {
-                name: element.name,
-                value: element.value,
-              };
-            }),
-          ],
+          texts,
         },
       ])
     );
@@ -42,6 +48,7 @@ function main() {
     change: false,
     keydown: false,
   };
+  let shouldSaveAfterInterval = false;
 
   [...inputs, ...textareas].forEach((element) => {
     eventNames.forEach((eventName) => {
@@ -53,11 +60,16 @@ function main() {
 
         // 保存しまくらないように10秒ごとに保存にする
         if (isInterval[eventName]) {
+          shouldSaveAfterInterval = true;
           return;
         }
         isInterval[eventName] = true;
         setTimeout(() => {
           isInterval[eventName] = false;
+          if (shouldSaveAfterInterval) {
+            saveHistory([element]);
+            shouldSaveAfterInterval = false;
+          }
         }, 10000);
 
         saveHistory([element]);
