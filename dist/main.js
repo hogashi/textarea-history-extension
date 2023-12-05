@@ -2,8 +2,8 @@
 const LOCAL_STORAGE_KEY = "textarea-history-extension-histories";
 function main() {
     // トークンとかはとらないようにする
-    const inputs = [...document.querySelectorAll('input:not([type="hidden"])')];
-    const textareas = [...document.querySelectorAll("textarea")];
+    const inputs = Array.from(document.querySelectorAll('input:not([type="hidden"])'));
+    const textareas = Array.from(document.querySelectorAll("textarea"));
     if (inputs.length === 0 && textareas.length === 0) {
         return;
     }
@@ -40,25 +40,27 @@ function main() {
     let shouldSaveAfterInterval = false;
     [...inputs, ...textareas].forEach((element) => {
         eventNames.forEach((eventName) => {
-            element.addEventListener(eventName, (event) => {
-                // 日本語入力中だったら何もしない
-                if (event.isComposing) {
-                    return;
-                }
-                // 保存しまくらないように10秒ごとに保存にする
-                if (isInterval[eventName]) {
-                    shouldSaveAfterInterval = true;
-                    return;
-                }
-                isInterval[eventName] = true;
-                setTimeout(() => {
-                    isInterval[eventName] = false;
-                    if (shouldSaveAfterInterval) {
-                        saveHistory([element]);
-                        shouldSaveAfterInterval = false;
+            element.addEventListener(eventName, {
+                handleEvent: (event) => {
+                    // 日本語入力中だったら何もしない
+                    if (event.isComposing) {
+                        return;
                     }
-                }, 10000);
-                saveHistory([element]);
+                    // 保存しまくらないように10秒ごとに保存にする
+                    if (isInterval[eventName]) {
+                        shouldSaveAfterInterval = true;
+                        return;
+                    }
+                    isInterval[eventName] = true;
+                    setTimeout(() => {
+                        isInterval[eventName] = false;
+                        if (shouldSaveAfterInterval) {
+                            saveHistory([element]);
+                            shouldSaveAfterInterval = false;
+                        }
+                    }, 10000);
+                    saveHistory([element]);
+                },
             });
         });
     });

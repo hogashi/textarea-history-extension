@@ -2,14 +2,14 @@ const LOCAL_STORAGE_KEY = "textarea-history-extension-histories";
 
 function main() {
   // トークンとかはとらないようにする
-  const inputs = [...document.querySelectorAll('input:not([type="hidden"])')];
-  const textareas = [...document.querySelectorAll("textarea")];
+  const inputs = Array.from(document.querySelectorAll<HTMLInputElement>('input:not([type="hidden"])'));
+  const textareas = Array.from(document.querySelectorAll("textarea"));
 
   if (inputs.length === 0 && textareas.length === 0) {
     return;
   }
 
-  function saveHistory(elements) {
+  function saveHistory(elements: (HTMLInputElement | HTMLTextAreaElement)[]) {
     const datetime = new Date().toISOString();
 
     const texts = elements
@@ -42,7 +42,7 @@ function main() {
   saveHistory([...inputs, ...textareas]);
 
   const eventNames = ["input", "change", "keydown"];
-  let isInterval = {
+  let isInterval: { [key: (typeof eventNames)[number]]: boolean } = {
     input: false,
     change: false,
     keydown: false,
@@ -51,27 +51,29 @@ function main() {
 
   [...inputs, ...textareas].forEach((element) => {
     eventNames.forEach((eventName) => {
-      element.addEventListener(eventName, (event) => {
-        // 日本語入力中だったら何もしない
-        if (event.isComposing) {
-          return;
-        }
-
-        // 保存しまくらないように10秒ごとに保存にする
-        if (isInterval[eventName]) {
-          shouldSaveAfterInterval = true;
-          return;
-        }
-        isInterval[eventName] = true;
-        setTimeout(() => {
-          isInterval[eventName] = false;
-          if (shouldSaveAfterInterval) {
-            saveHistory([element]);
-            shouldSaveAfterInterval = false;
+      element.addEventListener(eventName, {
+        handleEvent: (event: KeyboardEvent) => {
+          // 日本語入力中だったら何もしない
+          if (event.isComposing) {
+            return;
           }
-        }, 10000);
 
-        saveHistory([element]);
+          // 保存しまくらないように10秒ごとに保存にする
+          if (isInterval[eventName]) {
+            shouldSaveAfterInterval = true;
+            return;
+          }
+          isInterval[eventName] = true;
+          setTimeout(() => {
+            isInterval[eventName] = false;
+            if (shouldSaveAfterInterval) {
+              saveHistory([element]);
+              shouldSaveAfterInterval = false;
+            }
+          }, 10000);
+
+          saveHistory([element]);
+        },
       });
     });
   });
