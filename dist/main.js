@@ -1,15 +1,9 @@
 const LOCAL_STORAGE_KEY = "textarea-histories";
 
 function main() {
-  // 見えるテキスト入力欄をとる
-  const inputs = [...document.querySelectorAll("input")].filter((i) => {
-    const { width, height } = i.getBoundingClientRect();
-    return width + height > 0;
-  });
-  const textareas = [...document.querySelectorAll("textarea")].filter((i) => {
-    const { width, height } = i.getBoundingClientRect();
-    return width + height > 0;
-  });
+  // トークンとかはとらないようにする
+  const inputs = [...document.querySelectorAll('input:not([type="hidden"])')];
+  const textareas = [...document.querySelectorAll("textarea")];
 
   if (inputs.length === 0 && textareas.length === 0) {
     return;
