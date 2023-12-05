@@ -1,4 +1,5 @@
 const LOCAL_STORAGE_KEY = "textarea-history-extension-histories";
+const MAX_HISTORY_COUNT = 1000;
 
 function main() {
   // トークンとかはとらないようにする
@@ -28,13 +29,7 @@ function main() {
     const inputHistories = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY) || "[]");
     localStorage.setItem(
       LOCAL_STORAGE_KEY,
-      JSON.stringify([
-        ...inputHistories,
-        {
-          datetime,
-          texts,
-        },
-      ])
+      JSON.stringify([...inputHistories, { datetime, texts }].slice(-MAX_HISTORY_COUNT))
     );
   }
 
