@@ -11,7 +11,7 @@ function main() {
 
   const inputHistories = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY) || "[]");
 
-  function saveHistory() {
+  function saveHistory(elements) {
     const datetime = new Date().toISOString();
 
     localStorage.setItem(
@@ -20,16 +20,21 @@ function main() {
         ...inputHistories,
         {
           datetime,
-          history: {
-            inputs: [...inputs].map((input) => input.value),
-            textareas: [...textareas].map((textarea) => textarea.value),
-          },
+          texts: [
+            ...elements.map((element) => {
+              return {
+                name: element.name,
+                value: element.value,
+              };
+            }),
+          ],
         },
       ])
     );
   }
 
-  saveHistory();
+  // 最初はまず全部保存する
+  saveHistory([...inputs, ...textareas]);
 
   const eventNames = ["input", "change", "keydown"];
   let isInterval = {
@@ -55,7 +60,7 @@ function main() {
           isInterval[eventName] = false;
         }, 10000);
 
-        saveHistory();
+        saveHistory([element]);
       });
     });
   });
