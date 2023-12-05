@@ -9,8 +9,6 @@ function main() {
     return;
   }
 
-  const inputHistories = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY) || "[]");
-
   function saveHistory(elements) {
     const datetime = new Date().toISOString();
 
@@ -27,6 +25,7 @@ function main() {
       return;
     }
 
+    const inputHistories = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY) || "[]");
     localStorage.setItem(
       LOCAL_STORAGE_KEY,
       JSON.stringify([
